@@ -237,7 +237,7 @@ end
 
 Required implicit arguments: `range_check_ptr`
 
-### Uniqueness: `check_arr_unique`
+### Uniqueness: `assert_arr_unique`
 
 Checks if an array is only composed of unique elements.
 
@@ -246,13 +246,13 @@ Checks if an array is only composed of unique elements.
 Import
 
 ```cairo
-from cairopen.math.array import check_arr_unique
+from cairopen.math.array import assert_arr_unique
 ```
 
 Declaration
 
 ```cairo
-func check_arr_unique{range_check_ptr}(arr_len, arr):
+func assert_arr_unique{range_check_ptr}(arr_len, arr):
 end
 ```
 
@@ -265,14 +265,14 @@ func example{range_check_ptr}():
   arr1[0] = 1
   arr1[1] = 2
   arr1[2] = 3
-  check_arr_unique(arr1_size, arr1) # Success
+  assert_arr_unique(arr1_size, arr1) # Success
 
   arr2_size = 3
   let (arr1 : felt*) = alloc()
   arr2[0] = 1
   arr2[1] = 2
   arr2[2] = 2
-  check_arr_unique(arr2_size, arr2) # Reverts
+  assert_arr_unique(arr2_size, arr2) # Reverts
 
   return ()
 end

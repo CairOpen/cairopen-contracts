@@ -42,8 +42,8 @@ Mathematical utilities in Cairo. [Docs](src/cairopen/math/)
 - [concat_arr](src/cairopen/math/README.md#concatenation-concat_arr)
 - [concat_felt_arr](src/cairopen/math/README.md#felt-only-concatenation-concat_felt_arr)
 - [invert_arr](src/cairopen/math/README.md#inversion-invert_arr)
-- [invert_felt_arr](src/cairopen/math/README.md#felt-only-inversion-invert_arr)
-- [check_arr_unique](src/cairopen/math/README.md#uniqueness-check_arr_unique)
+- [invert_felt_arr](src/cairopen/math/README.md#felt-only-inversion-invert_felt_arr)
+- [assert_arr_unique](src/cairopen/math/README.md#uniqueness-assert_arr_unique)
 
 ## Usage
 
