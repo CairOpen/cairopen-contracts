@@ -1,0 +1,1 @@
+test :; protostar test tests/
