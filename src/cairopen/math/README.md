@@ -131,9 +131,20 @@ end
 
 Required implicit arguments: `range_check_ptr`
 
-### Invertion: `invert_arr`
+### Inversion: `invert_arr`
 
-Inverts an array.
+Inverts an array
+
+Arguments
+
+- `arr_len : felt` : The array's length
+- `arr : (felt | struct)*` : The array
+- `size : felt` : The size of the struct
+
+Returns
+
+- `res_len : felt` : The inverted array's length ( `arr_len` )
+- `res : felt*` : The inverted array (for structures see Usage example)
 
 Import
 
@@ -145,6 +156,64 @@ Declaration
 
 ```cairo
 func invert_arr{range_check_ptr}(arr_len, arr) -> (res_len, res):
+end
+```
+
+Usage
+
+```cairo
+struct Structure:
+    member m1 : felt
+    member m2 : felt
+end
+
+func example{range_check_ptr}() -> (res_len : felt, res : Structure*):
+  arr_size = 3
+  let (arr : Structre*) = alloc()
+  assert arr[0] = Structure(m1=1, m2=2)
+  assert arr[1] = Structure(m1=3, m2=4)
+  assert arr[2] = Structure(m1=5, m2=6)
+
+  let (res_len, felt_arr) = invert_arr(arr_size, arr)
+  let res = cast(felt_arr, Structure*) # Important for struct usage
+
+  return (res_len, res)
+end
+
+# res_len = 3
+# res = [
+#   Structure(m1=5, m2=6)
+#   Structure(m1=3, m2=4),
+#   Structure(m1=1, m2=2),
+# ]
+```
+
+Required implicit arguments: `range_check_ptr`
+
+### Felt-only inversion: `invert_felt_arr`
+
+Inverts a **felt** array (same as `invert_arr` but with the implicit size of 1)
+
+Arguments
+
+- `arr_len : felt` : The array's length
+- `arr : (felt | struct)*` : The array
+
+Returns
+
+- `res_len : felt` : The inverted array's length ( `arr_len` )
+- `res : felt*` : The inverted array
+
+Import
+
+```cairo
+from cairopen.math.array import invert_felt_arr
+```
+
+Declaration
+
+```cairo
+func invert_felt_arr{range_check_ptr}(arr_len, arr) -> (res_len, res):
 end
 ```
 

@@ -39,6 +39,12 @@ String utilities to store and manipulation strings in Cairo. [Docs](src/cairopen
 
 Mathematical utilities in Cairo. [Docs](src/cairopen/math/)
 
+- [concat_arr](src/cairopen/math/README.md#concatenation-concat_arr)
+- [concat_felt_arr](src/cairopen/math/README.md#felt-only-concatenation-concat_felt_arr)
+- [invert_arr](src/cairopen/math/README.md#inversion-invert_arr)
+- [invert_felt_arr](src/cairopen/math/README.md#felt-only-inversion-invert_arr)
+- [check_arr_unique](src/cairopen/math/README.md#uniqueness-check_arr_unique)
+
 ## Usage
 
 To use the librairy in contracts then
@@ -53,56 +59,8 @@ from cairopen.string.store import String_set, String_get, String_delete
 
 ## Local setup
 
-We strongly suggest using a python virtual environment such as `virtualenv`
-
-To create the envirnoment, run
-
-```bash
-pip install virtualenv
-```
-
-```bash
-python -m virtualenv .venv
-```
-
-```bash
-source .venv/bin/activate
-```
-
-Then install the libraries using
-
-```bash
-pip install -r requirements.txt
-```
-
-### Mac Cairo installation
-
-The GMP lib is required to install `cairo-lang`. You can install it with
-
-```bash
-brew install gmp
-```
-
-Brew details [here](https://brew.sh/).
-
-#### M1 issues
-
-If you run into a `gmp.h` issue while trying to install `cairo-lang` on an M1 Mac, make sure you have the latest `pip version` with
-
-```bash
-pip install --upgrade pip
-```
-
-Then try running
-
-```
-CFLAGS=-I`brew --prefix gmp`/include LDFLAGS=-L`brew --prefix gmp`/lib pip install ecdsa fastecdsa sympy
-```
+This project is built using [Protostar](https://docs.swmansion.com/protostar/)
 
 ### Makefile scripts
 
-Unit tests: `make unittest`
-
-Integration tests: `make test`
-
-Build packages: `make build`
+Tests: `make test`
