@@ -7,6 +7,7 @@ from starkware.cairo.common.math_cmp import is_le
 
 from cairopen.math.array import concat_felt_arr, invert_felt_arr
 from cairopen.string.string import String
+from cairopen.string.manipulation import String_extract_last_char_from_ss
 from cairopen.string.constants import CHAR_SIZE, STRING_MAX_LEN
 
 #
@@ -76,7 +77,7 @@ func _ss_to_inverted_string_loop{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}
 ) -> (str_len : felt):
     alloc_locals
 
-    let (ss_rem, char) = unsigned_div_rem(ss, CHAR_SIZE)
+    let (ss_rem, char) = String_extract_last_char_from_ss(ss)
     assert str_seed[index] = char
 
     if char == ss:
@@ -106,22 +107,23 @@ func String_ss_arr_to_string{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}(
     ss_arr_len : felt, ss_arr : felt*
 ) -> (str : String):
     let (str_seed) = alloc()
-    let (str_len, str) = _ss_arr_to_string_loop(ss_arr_len, ss_arr, 0, str_seed)
+    let (str_len, str) = _ss_arr_to_string_loop(ss_arr_len, ss_arr, 0, 0, str_seed)
     return (String(str_len, str))
 end
 
 func _ss_arr_to_string_loop{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}(
-    ss_arr_len : felt, ss_arr : felt*, prev_str_len : felt, prev_str : felt*
+    ss_arr_len : felt, ss_arr : felt*, ss_index : felt, prev_str_len : felt, prev_str : felt*
 ) -> (str_len : felt, str : felt*):
     alloc_locals
 
     let (local ss_str_seed : felt*) = alloc()
-    let (ss_str_len) = _ss_to_inverted_string_loop(ss_arr[ss_arr_len - 1], ss_str_seed, 0)
+    let (ss_str_len) = _ss_to_inverted_string_loop(ss_arr[ss_index], ss_str_seed, 0)
+    let (_, str_str) = invert_felt_arr(ss_str_len, ss_str_seed)
 
-    let (str_len, str) = concat_felt_arr(ss_str_len, ss_str_seed, prev_str_len, prev_str)
-    if ss_arr_len == 1:
+    let (str_len, str) = concat_felt_arr(prev_str_len, prev_str, ss_str_len, str_str)
+    if ss_index == ss_arr_len - 1:
         return (str_len, str)
     end
 
-    return _ss_arr_to_string_loop(ss_arr_len - 1, ss_arr, str_len, str)
+    return _ss_arr_to_string_loop(ss_arr_len, ss_arr, ss_index + 1, str_len, str)
 end
