@@ -35,6 +35,29 @@ pip install cairopen-cairo
 
 String utilities to store and manipulation strings in Cairo. [Docs](src/cairopen/string/)
 
+- [String](src/cairopen/string/README.md#string)
+  - [String type](src/cairopen/string/README.md#string-type-string)
+- [Storage](src/cairopen/string/README.md#storage)
+  - [Write](src/cairopen/string/README.md#write-string_write)
+  - [Write from char array](src/cairopen/string/README.md#write-from-char-array-string_write_from_char_arr)
+  - [Read](src/cairopen/string/README.md#read-string_read)
+  - [Delete](src/cairopen/string/README.md#delete-string_delete)
+- [Conversion](src/cairopen/string/README.md#conversion)
+  - [Stringify number](src/cairopen/string/README.md#stringify-number-string_felt_to_string)
+  - [Short string to string](src/cairopen/string/README.md#short-string-to-string-string_ss_to_string)
+  - [Short string array to string](src/cairopen/string/README.md#short-string-array-to-string-string_ss_arr_to_string)
+- [Manipulation](src/cairopen/string/README.md#manipulation)
+  - [Append strings](src/cairopen/string/README.md#append-strings-string_append)
+  - [Append char to string](src/cairopen/string/README.md#append-char-to-string-string_append_char)
+  - [Join paths](src/cairopen/string/README.md#join-paths-string_path_join)
+  - [Extract last char from short string](src/cairopen/string/README.md#extract-last-char-from-short-string-string_extract_last_char_from_ss)
+- [Constants](src/cairopen/string/README.md#constants)
+  - [SHORT_STRING_MAX_LEN](src/cairopen/string/README.md#short_string_max_len)
+  - [SHORT_STRING_MAX_VALUE](src/cairopen/string/README.md#short_string_max_value)
+  - [CHAR_SIZE](src/cairopen/string/README.md#char_size)
+  - [LAST_CHAR_MASK](src/cairopen/string/README.md#last_char_mask)
+  - [STRING_MAX_LEN](src/cairopen/string/README.md#string_max_len)
+
 ### Math
 
 Mathematical utilities in Cairo. [Docs](src/cairopen/math/)
@@ -55,7 +78,7 @@ To use the librairy in contracts then
 
 %lang starknet
 
-from cairopen.string.store import String_set, String_get, String_delete
+from cairopen.string.storage import String_set, String_get, String_delete
 ```
 
 ## Local setup

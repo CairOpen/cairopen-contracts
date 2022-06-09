@@ -2,7 +2,7 @@
 
 from starkware.cairo.common.cairo_builtins import BitwiseBuiltin, HashBuiltin
 
-from cairopen.string.store import String_get, String_set, String_delete
+from cairopen.string.storage import String_get, String_set, String_delete
 from cairopen.string.manipulation import (
     String_append,
     String_path_join,

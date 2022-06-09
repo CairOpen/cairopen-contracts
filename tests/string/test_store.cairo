@@ -5,7 +5,7 @@ from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.math import assert_le
 
 from cairopen.string.string import String
-from cairopen.string.store import (
+from cairopen.string.storage import (
     strings_data,
     strings_len,
     String_read,

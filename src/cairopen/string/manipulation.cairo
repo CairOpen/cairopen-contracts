@@ -9,26 +9,6 @@ from cairopen.string.string import String
 from cairopen.string.constants import LAST_CHAR_MASK, SHORT_STRING_MAX_VALUE, CHAR_SIZE
 
 #
-# Joins to strings together and adding a '/' in between if needed
-# e.g. path_join("sekai.gg", "assets") -> "sekai.gg/assets"
-#
-# Parameters:
-#   base (String): The first string
-#   str (String): The second string
-#
-# Returns:
-#   str (String): The string
-#
-func String_path_join{range_check_ptr}(base : String, str : String) -> (res : String):
-    if base.data[base.len - 1] == '/':
-        return String_append(base, str)
-    end
-
-    let (slash_base) = String_append_char(base, '/')
-    return String_append(slash_base, str)
-end
-
-#
 # Appends two strings together
 # ** Wrapper of cairopen.math.array.concat_felt_arr **
 #
@@ -58,6 +38,26 @@ func String_append_char{range_check_ptr}(base : String, char : felt) -> (res : S
     assert base.data[base.len] = char
 
     return (String(base.len + 1, base.data))
+end
+
+#
+# Joins to strings together and adding a '/' in between if needed
+# e.g. path_join("sekai.gg", "assets") -> "sekai.gg/assets"
+#
+# Parameters:
+#   base (String): The first string
+#   str (String): The second string
+#
+# Returns:
+#   str (String): The string
+#
+func String_path_join{range_check_ptr}(base : String, str : String) -> (res : String):
+    if base.data[base.len - 1] == '/':
+        return String_append(base, str)
+    end
+
+    let (slash_base) = String_append_char(base, '/')
+    return String_append(slash_base, str)
 end
 
 #
