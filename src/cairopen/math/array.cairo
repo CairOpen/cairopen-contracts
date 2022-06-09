@@ -2,6 +2,7 @@
 
 from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.dict_access import DictAccess
+from starkware.cairo.common.math import assert_le
 from starkware.cairo.common.memcpy import memcpy
 from starkware.cairo.common.squash_dict import squash_dict
 
@@ -9,6 +10,9 @@ func concat_arr{range_check_ptr}(
     arr1_len : felt, arr1 : felt*, arr2_len : felt, arr2 : felt*, size : felt
 ) -> (res_len : felt, res : felt*):
     alloc_locals
+    with_attr error_message("concat_arr: size must be greather or equal to 1"):
+        assert_le(1, size)
+    end
     let (local res : felt*) = alloc()
     memcpy(res, arr1, arr1_len * size)
     memcpy(res + arr1_len * size, arr2, arr2_len * size)
@@ -25,6 +29,9 @@ func invert_arr{range_check_ptr}(arr_len : felt, arr : felt*, size : felt) -> (
     inv_arr_len : felt, inv_arr : felt*
 ):
     alloc_locals
+    with_attr error_message("invert_arr: size must be greather or equal to 1"):
+        assert_le(1, size)
+    end
     let (local inv_arr : felt*) = alloc()
     _loop_invert_arr(arr_len, arr, inv_arr, 0, size)
     return (arr_len, inv_arr)

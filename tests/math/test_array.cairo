@@ -48,6 +48,26 @@ func test_concat_arr{range_check_ptr}():
 end
 
 @external
+func test_concat_arr_invalid_size{range_check_ptr}():
+    alloc_locals
+
+    const arr1_len = 2
+    let (local arr1 : Structure*) = alloc()
+    assert arr1[0] = Structure(m1=1, m2=2, m3=3, m4=4)
+    assert arr1[1] = Structure(m1=3, m2=4, m3=5, m4=6)
+
+    const arr2_len = 2
+    let (local arr2 : Structure*) = alloc()
+    assert arr2[0] = Structure(m1=5, m2=6, m3=7, m4=8)
+    assert arr2[1] = Structure(m1=7, m2=8, m3=9, m4=10)
+
+    %{ expect_revert("TRANSACTION_FAILED", "concat_arr: size must be greather or equal to 1") %}
+    let (arr_len, felt_arr) = concat_arr(arr1_len, arr1, arr2_len, arr2, -1)
+
+    return ()
+end
+
+@external
 func test_concat_felt_arr{range_check_ptr}():
     alloc_locals
 
@@ -111,6 +131,22 @@ func test_invert_arr{range_check_ptr}():
     assert inv_arr[3].m3 = 3
     assert inv_arr[3].m4 = 4
 
+    return ()
+end
+
+@external
+func test_invert_arr_invalid_size{range_check_ptr}():
+    alloc_locals
+
+    const arr_len = 4
+    let (local arr : Structure*) = alloc()
+    assert arr[0] = Structure(m1=1, m2=2, m3=3, m4=4)
+    assert arr[1] = Structure(m1=3, m2=4, m3=5, m4=6)
+    assert arr[2] = Structure(m1=5, m2=6, m3=7, m4=8)
+    assert arr[3] = Structure(m1=7, m2=8, m3=9, m4=10)
+
+    %{ expect_revert("TRANSACTION_FAILED", "invert_arr: size must be greather or equal to 1") %}
+    let (inv_arr_len, felt_arr) = invert_arr(arr_len, arr, 0)
     return ()
 end
 
