@@ -5,22 +5,16 @@ from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.math import assert_le
 
 from cairopen.string.string import String
-from cairopen.string.constants import SHORT_STRING_MAX_LEN
-from cairopen.string.conversion import (
-    String_felt_to_string,
-    String_ss_to_string,
-    String_ss_arr_to_string,
-)
 
 #
-# String_felt_to_string
+# felt_to_string
 #
 
 @external
 func test_felt_to_string{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
     let _felt = 12345
 
-    let (str) = String_felt_to_string(_felt)
+    let (str) = String.felt_to_string(_felt)
 
     assert str.len = 5
     assert str.data[0] = '1'
@@ -32,14 +26,14 @@ func test_felt_to_string{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
 end
 
 #
-# String_ss_to_string
+# ss_to_string
 #
 
 @external
 func test_ss_to_string{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
     let ss = 'Hello'
 
-    let (str) = String_ss_to_string(ss)
+    let (str) = String.ss_to_string(ss)
 
     assert str.len = 5
     assert str.data[0] = 'H'
@@ -51,7 +45,7 @@ func test_ss_to_string{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
 end
 
 #
-# String_ss_arr_to_string
+# ss_arr_to_string
 #
 
 @external
@@ -62,7 +56,7 @@ func test_ss_arr_to_string{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
     assert ss_arr[1] = ', world'
     assert ss_arr[2] = '!'
 
-    let (str) = String_ss_arr_to_string(SS_ARR_SIZE, ss_arr)
+    let (str) = String.ss_arr_to_string(SS_ARR_SIZE, ss_arr)
 
     assert str.len = 13
     assert str.data[0] = 'H'
@@ -88,7 +82,7 @@ func test_ss_arr_oversized_to_string{bitwise_ptr : BitwiseBuiltin*, range_check_
     assert ss_arr[0] = 'This is less than 31 chars'
     assert ss_arr[1] = 'But the total is more than 31'
 
-    let (str) = String_ss_arr_to_string(SS_ARR_SIZE, ss_arr)
+    let (str) = String.ss_arr_to_string(SS_ARR_SIZE, ss_arr)
 
     assert str.len = 55
     assert str.data[0] = 'T'

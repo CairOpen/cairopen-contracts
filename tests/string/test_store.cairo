@@ -5,22 +5,17 @@ from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.math import assert_le
 
 from cairopen.string.string import String
-from cairopen.string.storage import (
-    strings_data,
-    strings_len,
-    String_read,
-    String_write,
-    String_write_from_char_arr,
-)
+from cairopen.string.type import string
+from cairopen.string.storage import strings_len, strings_data
 
 #
-# String_write
+# write
 #
 
 @external
 func test_write_string{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     let (str_data) = alloc()
-    let str = String(57, str_data)
+    let str = string(57, str_data)
     assert str_data[0] = 'T'
     assert str_data[1] = 'h'
     assert str_data[2] = 'i'
@@ -79,7 +74,7 @@ func test_write_string{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
     assert str_data[55] = '3'
     assert str_data[56] = '1'
 
-    String_write('test', str)
+    String.write('test', str)
 
     let (stored_str_len) = strings_len.read('test')
     assert stored_str_len = 57
@@ -155,7 +150,7 @@ func test_write_from_char_arr{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, 
     assert str_data[55] = '3'
     assert str_data[56] = '1'
 
-    String_write_from_char_arr('test', 57, str_data)
+    String.write_from_char_arr('test', 57, str_data)
 
     let (stored_str_len) = strings_len.read('test')
     assert stored_str_len = 57
@@ -171,7 +166,7 @@ func test_write_from_char_arr{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, 
 end
 
 #
-# String_read
+# read
 #
 
 @external
@@ -182,7 +177,7 @@ func test_read_string{
     strings_data.write('test', 0, 'This is less than 31 chars, but')
     strings_data.write('test', 1, ' the total is more than 31')
 
-    let (str) = String_read('test')
+    let (str) = String.read('test')
     assert str.len = 57
     assert str.data[0] = 'T'
     assert str.data[1] = 'h'
