@@ -137,6 +137,22 @@ func test_append_char{range_check_ptr}():
     return ()
 end
 
+@external
+func test_append_char_not_single_char{range_check_ptr}():
+    let (base_data) = alloc()
+    let base = string(5, base_data)
+    assert base_data[0] = 'h'
+    assert base_data[1] = 'e'
+    assert base_data[2] = 'l'
+    assert base_data[3] = 'l'
+    assert base_data[4] = 'o'
+
+    %{ expect_revert(error_message="append_char: not appending a single character") %}
+    let (append) = String.append_char(base, '!!')
+
+    return ()
+end
+
 #
 # extract_last_char_from_ss
 #

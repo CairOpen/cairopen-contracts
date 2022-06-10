@@ -30,13 +30,13 @@ end
 
 Usage example
 
-```
+```cairo
 from starkware.cairo.common.alloc import alloc
 
 from cairopen.string.type import string
 
-func hello{range_check_ptr}() -> (str : string):
-  let len = 5
+func example{range_check_ptr}() -> (str : string):
+  let str_len = 5
   let (str_data) = alloc()
   assert str_data[0] = 'H'
   assert str_data[1] = 'e'
@@ -44,13 +44,14 @@ func hello{range_check_ptr}() -> (str : string):
   assert str_data[3] = 'l'
   assert str_data[4] = 'o'
 
-  return (string(len, str_data))
+  return (string(str_len, str_data))
 end
 
-# str.len = 5
-# str.data = ['H', 'e', 'l', 'l', 'o']
+# str = "Hello"
 #
-# str = "Hello" (can be considered as is)
+# In reality:
+#   str.len = 5
+#   str.data = ['H', 'e', 'l', 'l', 'o']
 ```
 
 # Namespace `String`
@@ -97,7 +98,19 @@ from cairopen.string.storage import storage_read
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin, HashBuiltin
 
+from cairopen.string.type import String
+
+func example{
+  syscall_ptr : felt*,
+  bitwise_ptr : BitwiseBuiltin*,
+  pedersen_ptr : HashBuiltin*,
+  range_check_ptr,
+}() -> (str : string):
+  let (str) = String.read('my_string')
+  return (str)
+end
 ```
 
 ### Write: `String.write`
@@ -128,7 +141,24 @@ from cairopen.string.storage import storage_write
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import HashBuiltin
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+  let str_len = 5
+  let (str_data) = alloc()
+  assert str_data[0] = 'H'
+  assert str_data[1] = 'e'
+  assert str_data[2] = 'l'
+  assert str_data[3] = 'l'
+  assert str_data[4] = 'o'
+
+  let str = string(str_len, str_data)
+  String.write('my_string', str)
+
+  return ()
+end
 ```
 
 ### Write from char array: `String.write_from_char_arr`
@@ -160,7 +190,23 @@ from cairopen.string.storage import storage_write_from_char_arr
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import HashBuiltin
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+  let str_len = 5
+  let (str_data) = alloc()
+  assert str_data[0] = 'H'
+  assert str_data[1] = 'e'
+  assert str_data[2] = 'l'
+  assert str_data[3] = 'l'
+  assert str_data[4] = 'o'
+
+  String.write_from_char_arr('my_string', len, str_data)
+
+  return ()
+end
 ```
 
 ### Delete: `String.delete`
@@ -190,7 +236,15 @@ from cairopen.string.storage import storage_delete
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import HashBuiltin
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+  String.delete('my_string')
+
+  return ()
+end
 ```
 
 ## Conversion
@@ -226,7 +280,21 @@ from cairopen.string.conversion import conversion_felt_to_string
 Usage example
 
 ```cairo
+from cairopen.string.type import String
 
+func example{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (str : string):
+  let _felt = 12345
+
+  let (str) = String.felt_to_str(_felt)
+
+  return (str)
+end
+
+# str = "12345"
+#
+# In reality:
+#   str.len = 5
+#   str.data = ['1', '2', '3', '4', '5']
 ```
 
 ### Short string to string: `String.ss_to_string`
@@ -261,7 +329,23 @@ from cairopen.string.conversion import conversion_ss_to_string
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, range_check_ptr}() -> (str : string):
+  let ss = 'Hello'
+
+  let (str) = String.ss_to_string(ss)
+
+  return (str)
+end
+
+# str = "Hello"
+#
+# In reality:
+#   str.len = 5
+#   str.data = ['H', 'e', 'l', 'l', 'o']
 ```
 
 ### Short string array to string: `String.ss_arr_to_string`
@@ -297,7 +381,27 @@ from cairopen.string.conversion import conversion_ss_arr_to_string
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
+from starkware.cairo.common.alloc import alloc
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, range_check_ptr}() -> (str : string):
+  let ss_arr_len = 2
+  let (ss_arr) = alloc()
+  assert ss_arr[0] = 'Hello'
+  assert ss_arr[1] = 'World'
+
+  let (str) = String.ss_arr_to_string(ss_arr_len, ss_arr)
+
+  return (str)
+end
+
+# str = "HelloWorld"
+#
+# In reality:
+#   str.len = 10
+#   str.data = ['H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd']
 ```
 
 ## Manipulation
@@ -334,7 +438,24 @@ from cairopen.string.manipulation import manipulation_concat
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, range_check_ptr}() -> (str : string):
+  let (str1) = String.ss_to_string('Hello')
+  let (str2) = String.ss_to_string('World')
+
+  let (str) = String.concat(str1, str2)
+
+  return (str)
+end
+
+# str = "HelloWorld"
+#
+# In reality:
+#   str.len = 10
+#   str.data = ['H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd']
 ```
 
 ### Append char to string: `String.append_char`
@@ -369,7 +490,24 @@ from cairopen.string.manipulation import manipulation_append_char
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, range_check_ptr}() -> (str : string):
+  let (base) = String.ss_to_string('Hello')
+  let char = '!'
+
+  let (str) = String.append_char(base, char)
+
+  return (str)
+end
+
+# str = "Hello!"
+#
+# In reality:
+#   str.len = 6
+#   str.data = ['H', 'e', 'l', 'l', 'o', '!']
 ```
 
 ### Join paths: `String.path_join`
@@ -405,7 +543,22 @@ from cairopen.string.manipulation import manipulation_path_join
 Usage example
 
 ```cairo
+from cairopen.string.type import String
 
+func example{syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, range_check_ptr}() -> (path : string):
+  let (path1) = String.ss_to_string('https://cairopen.org')
+  let (path2) = String.ss_to_string('docs')
+
+  let (path) = String.path_join(path1, path2)
+
+  return (path)
+end
+
+# path = "https://cairopen.org/docs"
+#
+# In reality:
+#   path.len = 23
+#   path.data = ['h', 't', 't', 'p', 's', ':', '/', '/', 'c', 'a', 'i', 'r', 'o', 'p', 'e', 'n', '.', 'o', 'r', 'g', '/', 'd', 'o', 'c', 's']
 ```
 
 ### Extract last char from short string: `String.extract_last_char_from_ss`
@@ -441,7 +594,20 @@ from cairopen.string.manipulation import manipulation_extract_last_char_from_ss
 Usage example
 
 ```cairo
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 
+from cairopen.string.type import String
+
+func example{syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, range_check_ptr}() -> (ss_rem : felt, char : felt):
+  let (ss) = 'Hello!'
+
+  let (ss_rem, char) = String.extract_last_char_from_ss(ss)
+
+  return (ss_rem, char)
+end
+
+# ss_rem = "Hello"
+# char = '!'
 ```
 
 ## Constants

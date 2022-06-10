@@ -228,6 +228,10 @@ Implicit arguments
 
 - `range_check_ptr (felt)`
 
+Error message
+
+`assert_felt_arr_unique: array is not unique`
+
 Import
 
 ```cairo

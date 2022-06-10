@@ -3,6 +3,7 @@
 from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 from starkware.cairo.common.bitwise import bitwise_and
 from starkware.cairo.common.alloc import alloc
+from starkware.cairo.common.math import assert_lt
 
 from cairopen.math.array import concat_felt_arr
 from cairopen.string.type import string
@@ -16,6 +17,9 @@ end
 
 # append character
 func manipulation_append_char{range_check_ptr}(base : string, char : felt) -> (str : string):
+    with_attr error_message("append_char: not appending a single character"):
+        assert_lt(char, CHAR_SIZE)
+    end
     assert base.data[base.len] = char
 
     return (string(base.len + 1, base.data))
