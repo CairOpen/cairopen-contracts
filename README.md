@@ -39,25 +39,25 @@ String utilities to store and manipulation strings in Cairo. [Docs](src/cairopen
   - [String type](src/cairopen/string/README.md#string-type-string)
 - [String Namespace](src/cairopen/string/README.md#namespace-string)
   - [Storage](src/cairopen/string/README.md#storage)
-    - [Read](src/cairopen/string/README.md#read-string.read)
-    - [Write](src/cairopen/string/README.md#write-string.write)
-    - [Write from char array](src/cairopen/string/README.md#write-from-char-array-string.write_from_char_arr)
-    - [Delete](src/cairopen/string/README.md#delete-string.delete)
+    - [Read](src/cairopen/string/README.md#read-stringread)
+    - [Write](src/cairopen/string/README.md#write-stringwrite)
+    - [Write from char array](src/cairopen/string/README.md#write-from-char-array-stringwrite_from_char_arr)
+    - [Delete](src/cairopen/string/README.md#delete-stringdelete)
   - [Conversion](src/cairopen/string/README.md#conversion)
-    - [Stringify number](src/cairopen/string/README.md#stringify-number-string.felt_to_string)
-    - [Short string to string](src/cairopen/string/README.md#short-string-to-string-string.ss_to_string)
-    - [Short string array to string](src/cairopen/string/README.md#short-string-array-to-string-string.ss_arr_to_string)
+    - [Stringify number](src/cairopen/string/README.md#stringify-number-stringfelt_to_string)
+    - [Short string to string](src/cairopen/string/README.md#short-string-to-string-stringss_to_string)
+    - [Short string array to string](src/cairopen/string/README.md#short-string-array-to-string-stringss_arr_to_string)
   - [Manipulation](src/cairopen/string/README.md#manipulation)
-    - [Concatenate strings](src/cairopen/string/README.md#append-strings-string.concat)
-    - [Append char to string](src/cairopen/string/README.md#append-char-to-string-string.append_char)
-    - [Join paths](src/cairopen/string/README.md#join-paths-string.path_join)
-    - [Extract last char from short string](src/cairopen/string/README.md#extract-last-char-from-short-string-string.extract_last_char_from_ss)
+    - [Concatenate strings](src/cairopen/string/README.md#append-strings-stringconcat)
+    - [Append char to string](src/cairopen/string/README.md#append-char-to-string-stringappend_char)
+    - [Join paths](src/cairopen/string/README.md#join-paths-stringpath_join)
+    - [Extract last char from short string](src/cairopen/string/README.md#extract-last-char-from-short-string-stringextract_last_char_from_ss)
   - [Constants](src/cairopen/string/README.md#constants)
-    - [SHORT_STRING_MAX_LEN](src/cairopen/string/README.md#short_string.max_len)
-    - [SHORT_STRING_MAX_VALUE](src/cairopen/string/README.md#short_string.max_value)
+    - [SHORT_STRING_MAX_LEN](src/cairopen/string/README.md#short_stringmax_len)
+    - [SHORT_STRING_MAX_VALUE](src/cairopen/string/README.md#short_stringmax_value)
     - [CHAR_SIZE](src/cairopen/string/README.md#char_size)
     - [LAST_CHAR_MASK](src/cairopen/string/README.md#last_char_mask)
-    - [STRING_MAX_LEN](src/cairopen/string/README.md#string.max_len)
+    - [STRING_MAX_LEN](src/cairopen/string/README.md#stringmax_len)
 
 ### Math
 
@@ -79,7 +79,7 @@ To use the librairy in contracts then
 
 %lang starknet
 
-from cairopen.string.storage import String_set, String_get, String_delete
+from cairopen.stringstorage import String_set, String_get, String_delete
 ```
 
 ## Local setup
