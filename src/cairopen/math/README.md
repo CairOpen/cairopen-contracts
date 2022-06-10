@@ -10,11 +10,15 @@ Concatenates two arrays together
 
 Arguments
 
-- `arr1_len : felt` : The first array's length
-- `arr1 : (felt | struct)*` : The first array
-- `arr2_len : felt` : The second array's length
-- `arr2 : (felt | struct)*` : The second array
-- `size : felt` : The size of the struct
+- `arr1_len (felt)` : The first array's length
+- `arr1 (felt* | struct*)` : The first array
+- `arr2_len (felt)` : The second array's length
+- `arr2 (felt* | struct*)` : The second array
+- `size (felt)` : The size of the struct
+
+Implicit arguments
+
+- `range_check_ptr (felt)`
 
 Returns
 
@@ -25,15 +29,6 @@ Import
 
 ```cairo
 from cairopen.math.array import concat_arr
-```
-
-Declaration
-
-```cairo
-func concat_arr{range_check_ptr}(
-  arr1_len : felt, arr1 : felt*, arr2_len : felt, arr2 : felt*, size : felt
-) -> (res_len : felt, res : felt*):
-end
 ```
 
 Usage example
@@ -72,8 +67,6 @@ end
 # ]
 ```
 
-Required implicit arguments: `range_check_ptr`
-
 ### Felt-only concatenation: `concat_felt_arr`
 
 Concatenates two **felt** arrays together (same as `concat_arr` but with the implicit size of 1)
@@ -85,6 +78,10 @@ Arguments
 - `arr2_len : felt` : The second array's length
 - `arr2 : (felt | struct)*` : The second array
 
+Implicit arguments
+
+- `range_check_ptr (felt)`
+
 Returns
 
 - `res_len : felt` : The concatenated array's length ( `arr1_len + arr2_len` )
@@ -94,15 +91,6 @@ Import
 
 ```cairo
 from cairopen.math.array import concat_felt_arr
-```
-
-Declaration
-
-```cairo
-func concat_felt_arr{range_check_ptr}(
-  arr1_len : felt, arr1 : felt*, arr2_len : felt, arr2 : felt*
-) -> (res_len : felt, res : felt*):
-end
 ```
 
 Usage example
@@ -129,8 +117,6 @@ end
 # res = [1, 2, 3, 4]
 ```
 
-Required implicit arguments: `range_check_ptr`
-
 ### Inversion: `invert_arr`
 
 Inverts an array
@@ -140,6 +126,10 @@ Arguments
 - `arr_len : felt` : The array's length
 - `arr : (felt | struct)*` : The array
 - `size : felt` : The size of the struct
+
+Implicit arguments
+
+- `range_check_ptr (felt)`
 
 Returns
 
@@ -152,14 +142,7 @@ Import
 from cairopen.math.array import invert_arr
 ```
 
-Declaration
-
-```cairo
-func invert_arr{range_check_ptr}(arr_len, arr) -> (res_len, res):
-end
-```
-
-Usage
+Usage example
 
 ```cairo
 struct Structure:
@@ -188,8 +171,6 @@ end
 # ]
 ```
 
-Required implicit arguments: `range_check_ptr`
-
 ### Felt-only inversion: `invert_felt_arr`
 
 Inverts a **felt** array (same as `invert_arr` but with the implicit size of 1)
@@ -198,6 +179,10 @@ Arguments
 
 - `arr_len : felt` : The array's length
 - `arr : (felt | struct)*` : The array
+
+Implicit arguments
+
+- `range_check_ptr (felt)`
 
 Returns
 
@@ -210,14 +195,7 @@ Import
 from cairopen.math.array import invert_felt_arr
 ```
 
-Declaration
-
-```cairo
-func invert_felt_arr{range_check_ptr}(arr_len, arr) -> (res_len, res):
-end
-```
-
-Usage
+Usage example
 
 ```cairo
 func example{range_check_ptr}() -> (res_len : felt, res : felt*):
@@ -235,13 +213,20 @@ end
 # res = [3, 2, 1]
 ```
 
-Required implicit arguments: `range_check_ptr`
+### Uniqueness: `assert_felt_arr_unique`
 
-### Uniqueness: `assert_arr_unique`
-
-Checks if an array is only composed of unique elements.
+Checks if an array is only composed of unique **felt** elements.
 
 ⚠️ This function reverts if the array is not unique ⚠️
+
+Arguments
+
+- `arr_len (felt)` : The array's length
+- `arr (felt*)` : The array
+
+Implicit arguments
+
+- `range_check_ptr (felt)`
 
 Import
 
@@ -249,14 +234,7 @@ Import
 from cairopen.math.array import assert_arr_unique
 ```
 
-Declaration
-
-```cairo
-func assert_arr_unique{range_check_ptr}(arr_len, arr):
-end
-```
-
-Usage
+Usage example
 
 ```cairo
 func example{range_check_ptr}():
@@ -277,5 +255,3 @@ func example{range_check_ptr}():
   return ()
 end
 ```
-
-Required implicit arguments: `range_check_ptr`

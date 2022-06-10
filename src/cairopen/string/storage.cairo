@@ -74,7 +74,7 @@ func storage_write{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check
     str_id : felt, str : string
 ):
     alloc_locals
-    with_attr error_message("string : exceeding max string length 2^15"):
+    with_attr error_message("write: exceeding max string length 2^15"):
         assert_le(str.len, STRING_MAX_LEN)
     end
     strings_len.write(str_id, str.len)

@@ -6,9 +6,18 @@ from starkware.cairo.common.math import assert_le
 from starkware.cairo.common.memcpy import memcpy
 from starkware.cairo.common.squash_dict import squash_dict
 
+# @dev Concatenates two arrays together
+# @implicit range_check_ptr (felt)
+# @param arr1_len (felt): The first array's length
+# @param arr1 (felt* | struct*): The first array (can be a struct or a felt)
+# @param arr2_len (felt): The second array's length
+# @param arr2 (felt* | struct*): The second array (can be a struct or a felt)
+# @param size (felt): The size of the struct
+# @return concat_len (felt): The length of the concatenated array
+# @return concat (felt*): The concatenated array (as a felt*, recast it for a struct*)
 func concat_arr{range_check_ptr}(
     arr1_len : felt, arr1 : felt*, arr2_len : felt, arr2 : felt*, size : felt
-) -> (res_len : felt, res : felt*):
+) -> (concat_len : felt, concat : felt*):
     alloc_locals
     with_attr error_message("concat_arr: size must be greather or equal to 1"):
         assert_le(1, size)
@@ -19,12 +28,27 @@ func concat_arr{range_check_ptr}(
     return (arr1_len + arr2_len, res)
 end
 
+# @dev Concatenates two **felt** arrays together
+# @implicit range_check_ptr (felt)
+# @param arr1_len (felt): The first array's length
+# @param arr1 (felt*): The first array
+# @param arr2_len (felt): The second array's length
+# @param arr2 (felt*): The second array
+# @return concat_len (felt): The length of the concatenated array
+# @return concat (felt*): The concatenated array
 func concat_felt_arr{range_check_ptr}(
     arr1_len : felt, arr1 : felt*, arr2_len : felt, arr2 : felt*
-) -> (res_len : felt, res : felt*):
+) -> (concat_len : felt, concat : felt*):
     return concat_arr(arr1_len, arr1, arr2_len, arr2, 1)
 end
 
+# @dev Inverts an array
+# @implicit range_check_ptr (felt)
+# @param arr_len (felt): The array's length
+# @param arr (felt*): The array (can be a struct or a felt)
+# @param size (felt): The struct size
+# @return inv_arr_len (felt): The inverted array's length
+# @return inv_arr (felt*): The inverted array
 func invert_arr{range_check_ptr}(arr_len : felt, arr : felt*, size : felt) -> (
     inv_arr_len : felt, inv_arr : felt*
 ):
@@ -37,6 +61,13 @@ func invert_arr{range_check_ptr}(arr_len : felt, arr : felt*, size : felt) -> (
     return (arr_len, inv_arr)
 end
 
+# @dev Inverts a **felt** array
+# @implicit range_check_ptr (felt)
+# @param arr_len (felt): The array's length
+# @param arr (felt*): The array (can be a struct or a felt)
+# @param size (felt): The struct size
+# @return inv_arr_len (felt): The inverted array's length
+# @return inv_arr (felt*): The inverted array
 func invert_felt_arr{range_check_ptr}(arr_len : felt, arr : felt*) -> (
     inv_arr_len : felt, inv_arr : felt*
 ):
@@ -47,14 +78,19 @@ end
 # Asserts
 #
 
-func assert_arr_unique{range_check_ptr}(arr_len : felt, arr : felt*):
+# @dev Asserts whether a **felt** array has no duplicate value
+# @dev reverts if there is a duplicate value
+# @implicit range_check_ptr (felt)
+# @param arr_len (felt): The array's length
+# @param arr (felt*): The array
+func assert_felt_arr_unique{range_check_ptr}(arr_len : felt, arr : felt*):
     alloc_locals
     let (local dict_start : DictAccess*) = alloc()
     let (local squashed_dict : DictAccess*) = alloc()
 
     let (dict_end) = _build_dict(arr, arr_len, dict_start)
 
-    with_attr error_message("Array: array is not unique"):
+    with_attr error_message("assert_felt_arr_unique: array is not unique"):
         squash_dict(dict_start, dict_end, squashed_dict)
     end
 

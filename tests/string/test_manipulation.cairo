@@ -70,11 +70,11 @@ func test_path_join_without_end_slash{range_check_ptr}():
 end
 
 #
-# append
+# concat
 #
 
 @external
-func test_append{range_check_ptr}():
+func test_concat{range_check_ptr}():
     let (base_data) = alloc()
     let base = string(6, base_data)
     assert base_data[0] = 'h'
@@ -93,23 +93,27 @@ func test_append{range_check_ptr}():
     assert str_data[4] = 'l'
     assert str_data[5] = 'd'
 
-    let (append) = String.append(base, str)
-    assert append.len = 12
-    assert append.data[0] = 'h'
-    assert append.data[1] = 'e'
-    assert append.data[2] = 'l'
-    assert append.data[3] = 'l'
-    assert append.data[4] = 'o'
-    assert append.data[5] = ','
-    assert append.data[6] = ' '
-    assert append.data[7] = 'w'
-    assert append.data[8] = 'o'
-    assert append.data[9] = 'r'
-    assert append.data[10] = 'l'
-    assert append.data[11] = 'd'
+    let (concat) = String.concat(base, str)
+    assert concat.len = 12
+    assert concat.data[0] = 'h'
+    assert concat.data[1] = 'e'
+    assert concat.data[2] = 'l'
+    assert concat.data[3] = 'l'
+    assert concat.data[4] = 'o'
+    assert concat.data[5] = ','
+    assert concat.data[6] = ' '
+    assert concat.data[7] = 'w'
+    assert concat.data[8] = 'o'
+    assert concat.data[9] = 'r'
+    assert concat.data[10] = 'l'
+    assert concat.data[11] = 'd'
 
     return ()
 end
+
+#
+# append_char
+#
 
 @external
 func test_append_char{range_check_ptr}():
@@ -152,7 +156,7 @@ end
 func test_extract_last_char_ss_too_long{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
     let ss = 2 ** 248
 
-    %{ expect_revert(error_message="string : exceeding max short string value 2^248 - 1") %}
+    %{ expect_revert(error_message="extract_last_char_from_ss: exceeding max short string value 2^248 - 1") %}
     let (ss_rem, char) = String.extract_last_char_from_ss(ss)
     return ()
 end

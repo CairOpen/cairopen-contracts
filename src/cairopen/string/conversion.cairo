@@ -24,7 +24,7 @@ func _loop_felt_to_inverted_string{range_check_ptr}(
     elem : felt, str_seed : felt*, index : felt
 ) -> (str_len : felt):
     alloc_locals
-    with_attr error_message("string : exceeding max string length 2^15"):
+    with_attr error_message("felt_to_string: exceeding max string length 2^15"):
         assert_le(index, STRING_MAX_LEN)
     end
 

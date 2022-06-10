@@ -7,7 +7,7 @@ from cairopen.math.array import (
     concat_felt_arr,
     invert_arr,
     invert_felt_arr,
-    assert_arr_unique,
+    assert_felt_arr_unique,
 )
 
 struct Structure:
@@ -173,11 +173,11 @@ func test_invert_felt_arr{range_check_ptr}():
 end
 
 #
-# assert_arr_unique
+# assert_felt_arr_unique
 #
 
 @external
-func test_assert_arr_unique{range_check_ptr}():
+func test_assert_felt_arr_unique{range_check_ptr}():
     alloc_locals
 
     const ARRAY_SIZE = 3
@@ -186,13 +186,13 @@ func test_assert_arr_unique{range_check_ptr}():
     assert array[1] = 2
     assert array[2] = 3
 
-    assert_arr_unique(ARRAY_SIZE, array)
+    assert_felt_arr_unique(ARRAY_SIZE, array)
 
     return ()
 end
 
 @external
-func test_assert_arr_unique_fail{range_check_ptr}():
+func test_assert_felt_arr_unique_fail{range_check_ptr}():
     alloc_locals
 
     const ARRAY_SIZE = 3
@@ -201,8 +201,8 @@ func test_assert_arr_unique_fail{range_check_ptr}():
     assert array[1] = 2
     assert array[2] = 2
 
-    %{ expect_revert(error_message="Array: array is not unique") %}
-    assert_arr_unique(ARRAY_SIZE, array)
+    %{ expect_revert(error_message="assert_felt_arr_unique: array is not unique") %}
+    assert_felt_arr_unique(ARRAY_SIZE, array)
 
     return ()
 end
