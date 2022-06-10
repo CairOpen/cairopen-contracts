@@ -48,16 +48,16 @@ String utilities to store and manipulation strings in Cairo. [Docs](src/cairopen
     - [Short string to string](src/cairopen/string/README.md#short-string-to-string-stringss_to_string)
     - [Short string array to string](src/cairopen/string/README.md#short-string-array-to-string-stringss_arr_to_string)
   - [Manipulation](src/cairopen/string/README.md#manipulation)
-    - [Concatenate strings](src/cairopen/string/README.md#append-strings-stringconcat)
+    - [Concatenate strings](src/cairopen/string/README.md#concatenate-strings-stringconcat)
     - [Append char to string](src/cairopen/string/README.md#append-char-to-string-stringappend_char)
     - [Join paths](src/cairopen/string/README.md#join-paths-stringpath_join)
     - [Extract last char from short string](src/cairopen/string/README.md#extract-last-char-from-short-string-stringextract_last_char_from_ss)
   - [Constants](src/cairopen/string/README.md#constants)
-    - [SHORT_STRING_MAX_LEN](src/cairopen/string/README.md#short_stringmax_len)
-    - [SHORT_STRING_MAX_VALUE](src/cairopen/string/README.md#short_stringmax_value)
+    - [SHORT_STRING_MAX_LEN](src/cairopen/string/README.md#short_string_max_len)
+    - [SHORT_STRING_MAX_VALUE](src/cairopen/string/README.md#short_string_max_value)
     - [CHAR_SIZE](src/cairopen/string/README.md#char_size)
     - [LAST_CHAR_MASK](src/cairopen/string/README.md#last_char_mask)
-    - [STRING_MAX_LEN](src/cairopen/string/README.md#stringmax_len)
+    - [STRING_MAX_LEN](src/cairopen/string/README.md#string_max_len)
 
 ### Math
 
@@ -79,7 +79,8 @@ To use the librairy in contracts then
 
 %lang starknet
 
-from cairopen.stringstorage import String_set, String_get, String_delete
+from cairopen.string.string import String
+from cairopen.string.type import string
 ```
 
 ## Local setup
