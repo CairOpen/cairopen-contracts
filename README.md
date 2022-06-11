@@ -1,4 +1,4 @@
-# CairOpen Starknet Libs
+# CairOpen Contracts
 
 A set of libraries to help using Cairo on StarkNet.
 
@@ -7,10 +7,10 @@ Examples for use in other Cairo contracts are provided in [examples](examples).
 ## Contents
 
 - [Installation](#installation)
+- [Usage](#usage)
 - [Libraries](#libraries)
   - [String](#string)
   - [Math](#math)
-- [Usage](#usage)
 - [Local setup](#local-setup)
 
 ## Installation
@@ -23,52 +23,9 @@ protostar install CairOpen/cairo-contracts
 
 ### Python
 
-To install the library run
-
-```bash
-pip install cairopen-cairo
+```diff
+! Coming soon
 ```
-
-## Libraries
-
-### String
-
-String utilities to store and manipulation strings in Cairo. [Docs](src/cairopen/string/)
-
-- [String](src/cairopen/string/README.md#string)
-  - [String type](src/cairopen/string/README.md#string-type-string)
-- [String Namespace `String`](src/cairopen/string/README.md#namespace-string)
-  - [Storage](src/cairopen/string/README.md#storage)
-    - [Read `String.read`](src/cairopen/string/README.md#read-stringread)
-    - [Write `String.write`](src/cairopen/string/README.md#write-stringwrite)
-    - [Write from char array `String.write_from_char_arr`](src/cairopen/string/README.md#write-from-char-array-stringwrite_from_char_arr)
-    - [Delete `String.delete`](src/cairopen/string/README.md#delete-stringdelete)
-  - [Conversion](src/cairopen/string/README.md#conversion)
-    - [Stringify number `String.felt_to_string`](src/cairopen/string/README.md#stringify-number-stringfelt_to_string)
-    - [Short string to string `String.ss_to_string`](src/cairopen/string/README.md#short-string-to-string-stringss_to_string)
-    - [Short string array to string `String.ss_arr_to_string`](src/cairopen/string/README.md#short-string-array-to-string-stringss_arr_to_string)
-  - [Manipulation](src/cairopen/string/README.md#manipulation)
-    - [Concatenate strings `String.concat`](src/cairopen/string/README.md#concatenate-strings-stringconcat)
-    - [Append char to string `String.append_char`](src/cairopen/string/README.md#append-char-to-string-stringappend_char)
-    - [Join paths `String.path_join`](src/cairopen/string/README.md#join-paths-stringpath_join)
-    - [Extract last char from short string `String.extract_last_char_from_ss`](src/cairopen/string/README.md#extract-last-char-from-short-string-stringextract_last_char_from_ss)
-  - [Constants](src/cairopen/string/README.md#constants)
-    - [SHORT_STRING_MAX_LEN](src/cairopen/string/README.md#short_string_max_len)
-    - [SHORT_STRING_MAX_VALUE](src/cairopen/string/README.md#short_string_max_value)
-    - [CHAR_SIZE](src/cairopen/string/README.md#char_size)
-    - [LAST_CHAR_MASK](src/cairopen/string/README.md#last_char_mask)
-    - [STRING_MAX_LEN](src/cairopen/string/README.md#string_max_len)
-
-### Math
-
-Mathematical utilities in Cairo. [Docs](src/cairopen/math/)
-
-- [Array](src/cairopen/math/README.md#array)
-  - [Concatenate `concat_arr`](src/cairopen/math/README.md#concatenation-concat_arr)
-  - [Concatenate **felt** `concat_felt_arr`](src/cairopen/math/README.md#felt-only-concatenation-concat_felt_arr)
-  - [Invert `invert_arr`](src/cairopen/math/README.md#inversion-invert_arr)
-  - [Invert **felt** `invert_felt_arr`](src/cairopen/math/README.md#felt-only-inversion-invert_felt_arr)
-  - [Uniqueness `assert_felt_arr_unique`](src/cairopen/math/README.md#uniqueness-assert_felt_arr_unique)
 
 ## Usage
 
@@ -82,6 +39,46 @@ To use the librairy in contracts then
 from cairopen.string.string import String
 from cairopen.string.type import string
 ```
+
+## Libraries
+
+### String
+
+String utilities to store and manipulation strings in Cairo. [Docs](src/cairopen/string/)
+
+- [Type `string`](src/cairopen/string/README.md#type-string)
+- [Namespace `String`](src/cairopen/string/README.md#namespace-string)
+- [Storage](src/cairopen/string/README.md#storage)
+  - [`String.read`](src/cairopen/string/README.md#stringread)
+  - [`String.write`](src/cairopen/string/README.md#stringwrite)
+  - [`String.write_from_char_arr`](src/cairopen/string/README.md#stringwrite_from_char_arr)
+  - [`String.delete`](src/cairopen/string/README.md#stringdelete)
+- [Conversion](src/cairopen/string/README.md#conversion)
+  - [`String.felt_to_string`](src/cairopen/string/README.md#stringfelt_to_string)
+  - [`String.ss_to_string`](src/cairopen/string/README.md#stringss_to_string)
+  - [`String.ss_arr_to_string`](src/cairopen/string/README.md#stringss_arr_to_string)
+- [Manipulation](src/cairopen/string/README.md#manipulation)
+  - [`String.concat`](src/cairopen/string/README.md#stringconcat)
+  - [`String.append_char`](src/cairopen/string/README.md#stringappend_char)
+  - [`String.path_join`](src/cairopen/string/README.md#stringpath_join)
+  - [`String.extract_last_char_from_ss`](src/cairopen/string/README.md#stringextract_last_char_from_ss)
+- [Constants](src/cairopen/string/README.md#constants)
+  - [SHORT_STRING_MAX_LEN](src/cairopen/string/README.md#short_string_max_len)
+  - [SHORT_STRING_MAX_VALUE](src/cairopen/string/README.md#short_string_max_value)
+  - [CHAR_SIZE](src/cairopen/string/README.md#char_size)
+  - [LAST_CHAR_MASK](src/cairopen/string/README.md#last_char_mask)
+  - [STRING_MAX_LEN](src/cairopen/string/README.md#string_max_len)
+
+### Math
+
+Mathematical utilities in Cairo. [Docs](src/cairopen/math/)
+
+- [Array](src/cairopen/math/README.md#array)
+  - [`concat_arr`](src/cairopen/math/README.md#concat_arr)
+  - [`concat_felt_arr`](src/cairopen/math/README.md#concat_felt_arr)
+  - [`invert_arr`](src/cairopen/math/README.md#invert_arr)
+  - [`invert_felt_arr`](src/cairopen/math/README.md#invert_felt_arr)
+  - [`assert_felt_arr_unique`](src/cairopen/math/README.md#assert_felt_arr_unique)
 
 ## Local setup
 

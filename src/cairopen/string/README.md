@@ -1,10 +1,8 @@
-# CairOpen Starknet Libs - String
+# CairOpen Contracts - String
 
 A library to store & manipulate strings in Cairo on StarkNet.
 
-## String
-
-### String type: `string`
+## Type `string`
 
 The type `string` is a struct used to simplify the use of strings in Cairo. Further mentions of the type `string` will infer a value of this type.
 
@@ -17,15 +15,6 @@ Import
 
 ```cairo
 from cairopen.string.type import string
-```
-
-Declaration
-
-```cairo
-struct string:
-  member len : felt
-  member data : felt*
-end
 ```
 
 Usage example
@@ -54,7 +43,9 @@ end
 #   str.data = ['H', 'e', 'l', 'l', 'o']
 ```
 
-# Namespace `String`
+---
+
+## Namespace `String`
 
 Every string utility function is accessible under the `String` namespace. They can also be called directly from their definition contract (see each doc for details).
 
@@ -64,9 +55,11 @@ Import
 from cairopen.string.string import String
 ```
 
+---
+
 ## Storage
 
-### Read: `String.read`
+### `String.read`
 
 Reads a string from storage based on its ID.
 
@@ -113,7 +106,9 @@ func example{
 end
 ```
 
-### Write: `String.write`
+---
+
+### `String.write`
 
 Writes a string in storage, using an ID to identify it.
 
@@ -161,9 +156,11 @@ func example{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 end
 ```
 
-### Write from char array: `String.write_from_char_arr`
+---
 
-Writes a string as a char array in storage, using an ID to identify it.
+### `String.write_from_char_arr`
+
+Writes a string from a char array in storage, using an ID to identify it.
 
 Arguments
 
@@ -203,13 +200,15 @@ func example{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
   assert str_data[3] = 'l'
   assert str_data[4] = 'o'
 
-  String.write_from_char_arr('my_string', len, str_data)
+  String.write_from_char_arr('my_string', str_len, str_data)
 
   return ()
 end
 ```
 
-### Delete: `String.delete`
+---
+
+### `String.delete`
 
 Deletes a string from storage, using an ID to identify it.
 
@@ -247,13 +246,15 @@ func example{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 end
 ```
 
+---
+
 ## Conversion
 
-### Stringify number: `String.felt_to_string`
+### `String.felt_to_string`
 
-Converts a felt to an ASCII string
+Converts a felt to an ASCII string.
 
-e.g. 12345 -> string("12345")
+e.g. 12345 &rarr; string("12345")
 
 Arguments
 
@@ -297,11 +298,13 @@ end
 #   str.data = ['1', '2', '3', '4', '5']
 ```
 
-### Short string to string: `String.ss_to_string`
+---
 
-Converts a short string to a string
+### `String.ss_to_string`
 
-e.g. 'Hello' -> string("Hello")
+Converts a short string to a string.
+
+e.g. 'Hello' &rarr; string("Hello")
 
 Arguments
 
@@ -348,11 +351,13 @@ end
 #   str.data = ['H', 'e', 'l', 'l', 'o']
 ```
 
-### Short string array to string: `String.ss_arr_to_string`
+---
 
-Converts an array of short strings to a string
+### `String.ss_arr_to_string`
 
-e.g. ['Hello', 'World'] -> string("HelloWorld")
+Converts an array of short strings to a string.
+
+e.g. ['Hello', 'World'] &rarr; string("HelloWorld")
 
 Arguments
 
@@ -404,13 +409,15 @@ end
 #   str.data = ['H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd']
 ```
 
+---
+
 ## Manipulation
 
-### Concatenate strings: `String.concat`
+### `String.concat`
 
-Appends two strings together
+Concatenates two strings together.
 
-e.g. string("Hello") + string("World") = string("HelloWorld")
+e.g. string("Hello") + string("World") &rarr; string("HelloWorld")
 
 Arguments
 
@@ -458,11 +465,13 @@ end
 #   str.data = ['H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd']
 ```
 
-### Append char to string: `String.append_char`
+---
 
-Appends a character (represented as a single character short string) to a string
+### `String.append_char`
 
-e.g. string("Hello") + '!' = string("Hello!")
+Appends a character (represented as a single character short string) to a string.
+
+e.g. string("Hello") + '!' &rarr; string("Hello!")
 
 Arguments
 
@@ -510,12 +519,15 @@ end
 #   str.data = ['H', 'e', 'l', 'l', 'o', '!']
 ```
 
-### Join paths: `String.path_join`
+---
 
-Joins two paths together, adding a '/' in between if not already present at the end of the first string
+### `String.path_join`
 
-e.g. string("Hello") + string("World") = string("Hello/World")
-e.g. string("Hello/") + string("World") = string("Hello/World")
+Joins two paths together, adding a '/' in between if not already present at the end of the first path.
+
+e.g. string("Hello") + string("World") &rarr; string("Hello/World")
+
+e.g. string("Hello/") + string("World") &rarr; string("Hello/World")
 
 Arguments
 
@@ -561,11 +573,13 @@ end
 #   path.data = ['h', 't', 't', 'p', 's', ':', '/', '/', 'c', 'a', 'i', 'r', 'o', 'p', 'e', 'n', '.', 'o', 'r', 'g', '/', 'd', 'o', 'c', 's']
 ```
 
-### Extract last char from short string: `String.extract_last_char_from_ss`
+---
 
-Extracts the last character from a short string and returns the characters before as a short string
+### `String.extract_last_char_from_ss`
 
-Manages felt up to 2\*\*248 - 1 (instead of unsigned*div_rem which is limited by rc_bound). \_On the down side it requires BitwiseBuiltin for the whole call chain*
+Extracts the last character from a short string and returns the remaining characters as a short string.
+
+Manages felt up to [SHORT_STRING_MAX_VALUE](#short_string_max_value) (instead of `unsigned_div_rem` which is limited by `rc_bound = 2 ** 148`). _On the down side it requires BitwiseBuiltin for the whole call chain_
 
 Arguments
 
@@ -610,11 +624,13 @@ end
 # char = '!'
 ```
 
+---
+
 ## Constants
 
 ### SHORT_STRING_MAX_LEN
 
-The maximum length of a short string, i.e. 31 characters
+The maximum length of a short string, i.e. 31 characters.
 
 ```cairo
 const SHORT_STRING_MAX_LEN = 31
@@ -622,7 +638,7 @@ const SHORT_STRING_MAX_LEN = 31
 
 ### SHORT_STRING_MAX_VALUE
 
-The maximum numerical value allowed for a short string, each character being enconded on an 8-bit value, i.e. `0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF` or `((2 ** 8) ** 31) - 1 = 2 ** 248 - 1`
+The maximum numerical value allowed for a short string, each character being enconded on an 8-bit value, i.e. `0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF` or `(2 ** 8) ** 31 - 1 = 2 ** 248 - 1`.
 
 ```cairo
 const SHORT_STRING_MAX_VALUE = 2 ** 248 - 1
@@ -630,7 +646,7 @@ const SHORT_STRING_MAX_VALUE = 2 ** 248 - 1
 
 ### CHAR_SIZE
 
-The 8-bit size of a character, i.e. `2 ** 8 = 256`
+The 8-bit size of a character, i.e. `2 ** 8 = 256`.
 
 ```cairo
 const CHAR_SIZE = 256
@@ -638,7 +654,7 @@ const CHAR_SIZE = 256
 
 ### LAST_CHAR_MASK
 
-Bitmask to retrieve the last character from a short string, i.e. the lowest 8 bits or `0xFF`
+Bitmask to retrieve the last character from a short string, i.e. the lowest 8 bits &rarr; `0xFF`.
 
 ```cairo
 const LAST_CHAR_MASK = CHAR_SIZE - 1
@@ -646,7 +662,7 @@ const LAST_CHAR_MASK = CHAR_SIZE - 1
 
 ### STRING_MAX_LEN
 
-The maximum length of a string, based on the maximum index for `felt*` in one direction, i.e. str[i] for i in [-2 ** 15, 2 ** 15)
+The maximum length of a string, based on the maximum index for `felt*` in one direction, i.e. str[i] for i in [-2 ** 15, 2 ** 15) or 32,768 characters.
 
 ```cairo
 const STRING_MAX_LEN = 2 ** 15
