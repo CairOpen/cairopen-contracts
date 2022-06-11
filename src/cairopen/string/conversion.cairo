@@ -29,7 +29,7 @@ func _loop_felt_to_inverted_string{range_check_ptr}(
     end
 
     let (rem_elem, unit) = unsigned_div_rem(elem, 10)
-    assert str_seed[index] = unit + '0'  # add '0' (= 48) to a number in range [0, 9] for utf-8 character code
+    assert str_seed[index] = unit + '0'  # add '0' (= 48) to a number in range [0, 9] for ASCII character code
     if rem_elem == 0:
         return (index + 1)
     end

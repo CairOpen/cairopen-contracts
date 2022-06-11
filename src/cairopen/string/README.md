@@ -614,10 +614,40 @@ end
 
 ### SHORT_STRING_MAX_LEN
 
+The maximum length of a short string, i.e. 31 characters
+
+```cairo
+const SHORT_STRING_MAX_LEN = 31
+```
+
 ### SHORT_STRING_MAX_VALUE
+
+The maximum numerical value allowed for a short string, each character being enconded on an 8-bit value, i.e. `0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF` or `((2 ** 8) ** 31) - 1 = 2 ** 248 - 1`
+
+```cairo
+const SHORT_STRING_MAX_VALUE = 2 ** 248 - 1
+```
 
 ### CHAR_SIZE
 
+The 8-bit size of a character, i.e. `2 ** 8 = 256`
+
+```cairo
+const CHAR_SIZE = 256
+```
+
 ### LAST_CHAR_MASK
 
+Bitmask to retrieve the last character from a short string, i.e. the lowest 8 bits or `0xFF`
+
+```cairo
+const LAST_CHAR_MASK = CHAR_SIZE - 1
+```
+
 ### STRING_MAX_LEN
+
+The maximum length of a string, based on the maximum index for `felt*` in one direction, i.e. str[i] for i in [-2 ** 15, 2 ** 15)
+
+```cairo
+const STRING_MAX_LEN = 2 ** 15
+```
