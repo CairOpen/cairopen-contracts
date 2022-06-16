@@ -1,10 +1,9 @@
 %lang starknet
 
-from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 from starkware.cairo.common.alloc import alloc
 
 from cairopen.string.string import String
-from cairopen.string.type import string
+from cairopen.string.utils import StringUtil
 
 #
 # path_join
@@ -13,7 +12,7 @@ from cairopen.string.type import string
 @external
 func test_path_join_with_end_slash{range_check_ptr}():
     let (base_data) = alloc()
-    let base = string(5, base_data)
+    let base = String(5, base_data)
     assert base_data[0] = 'p'
     assert base_data[1] = 'a'
     assert base_data[2] = 't'
@@ -21,12 +20,12 @@ func test_path_join_with_end_slash{range_check_ptr}():
     assert base_data[4] = '/'
 
     let (str_data) = alloc()
-    let str = string(3, str_data)
+    let str = String(3, str_data)
     assert str_data[0] = 'd'
     assert str_data[1] = 'i'
     assert str_data[2] = 'r'
 
-    let (join) = String.path_join(base, str)
+    let (join) = StringUtil.path_join(base, str)
     assert join.len = 8
     assert join.data[0] = 'p'
     assert join.data[1] = 'a'
@@ -43,19 +42,19 @@ end
 @external
 func test_path_join_without_end_slash{range_check_ptr}():
     let (base_data) = alloc()
-    let base = string(4, base_data)
+    let base = String(4, base_data)
     assert base_data[0] = 'p'
     assert base_data[1] = 'a'
     assert base_data[2] = 't'
     assert base_data[3] = 'h'
 
     let (str_data) = alloc()
-    let str = string(3, str_data)
+    let str = String(3, str_data)
     assert str_data[0] = 'd'
     assert str_data[1] = 'i'
     assert str_data[2] = 'r'
 
-    let (join) = String.path_join(base, str)
+    let (join) = StringUtil.path_join(base, str)
     assert join.len = 8
     assert join.data[0] = 'p'
     assert join.data[1] = 'a'
@@ -76,7 +75,7 @@ end
 @external
 func test_concat{range_check_ptr}():
     let (base_data) = alloc()
-    let base = string(6, base_data)
+    let base = String(6, base_data)
     assert base_data[0] = 'h'
     assert base_data[1] = 'e'
     assert base_data[2] = 'l'
@@ -85,7 +84,7 @@ func test_concat{range_check_ptr}():
     assert base_data[5] = ','
 
     let (str_data) = alloc()
-    let str = string(6, str_data)
+    let str = String(6, str_data)
     assert str_data[0] = ' '
     assert str_data[1] = 'w'
     assert str_data[2] = 'o'
@@ -93,7 +92,7 @@ func test_concat{range_check_ptr}():
     assert str_data[4] = 'l'
     assert str_data[5] = 'd'
 
-    let (concat) = String.concat(base, str)
+    let (concat) = StringUtil.concat(base, str)
     assert concat.len = 12
     assert concat.data[0] = 'h'
     assert concat.data[1] = 'e'
@@ -118,14 +117,14 @@ end
 @external
 func test_append_char{range_check_ptr}():
     let (base_data) = alloc()
-    let base = string(5, base_data)
+    let base = String(5, base_data)
     assert base_data[0] = 'h'
     assert base_data[1] = 'e'
     assert base_data[2] = 'l'
     assert base_data[3] = 'l'
     assert base_data[4] = 'o'
 
-    let (append) = String.append_char(base, '!')
+    let (append) = StringUtil.append_char(base, '!')
     assert append.len = 6
     assert append.data[0] = 'h'
     assert append.data[1] = 'e'
@@ -134,45 +133,5 @@ func test_append_char{range_check_ptr}():
     assert append.data[4] = 'o'
     assert append.data[5] = '!'
 
-    return ()
-end
-
-@external
-func test_append_char_not_single_char{range_check_ptr}():
-    let (base_data) = alloc()
-    let base = string(5, base_data)
-    assert base_data[0] = 'h'
-    assert base_data[1] = 'e'
-    assert base_data[2] = 'l'
-    assert base_data[3] = 'l'
-    assert base_data[4] = 'o'
-
-    %{ expect_revert(error_message="append_char: not appending a single character") %}
-    let (append) = String.append_char(base, '!!')
-
-    return ()
-end
-
-#
-# extract_last_char_from_ss
-#
-
-@external
-func test_extract_last_char{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
-    let ss = 'Hello'
-
-    let (ss_rem, char) = String.extract_last_char_from_ss(ss)
-
-    assert ss_rem = 'Hell'
-    assert char = 'o'
-    return ()
-end
-
-@external
-func test_extract_last_char_ss_too_long{bitwise_ptr : BitwiseBuiltin*, range_check_ptr}():
-    let ss = 2 ** 248
-
-    %{ expect_revert(error_message="extract_last_char_from_ss: exceeding max short string value 2^248 - 1") %}
-    let (ss_rem, char) = String.extract_last_char_from_ss(ss)
     return ()
 end
