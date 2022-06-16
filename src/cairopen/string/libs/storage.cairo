@@ -5,9 +5,9 @@ from starkware.cairo.common.cairo_builtins import BitwiseBuiltin, HashBuiltin
 from starkware.cairo.common.math import unsigned_div_rem, assert_le
 from starkware.cairo.common.pow import pow
 
-from cairopen.string.manipulation import manipulation_extract_last_char_from_ss
-from cairopen.string.type import string
-from cairopen.string.constants import SHORT_STRING_MAX_LEN, CHAR_SIZE, STRING_MAX_LEN
+from cairopen.string.string import String
+from cairopen.string.libs.conversion import conversion_extract_last_char_from_ss
+from cairopen.string.constants import SHORT_STRING_MAX_LEN, STRING_MAX_LEN
 
 @storage_var
 func strings_data(str_id : felt, short_string_index : felt) -> (short_string : felt):
@@ -19,26 +19,36 @@ end
 
 # read
 func storage_read{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(str_id : felt) -> (str : string):
+    syscall_ptr : felt*,
+    bitwise_ptr : BitwiseBuiltin*,
+    pedersen_ptr : HashBuiltin*,
+    range_check_ptr,
+    codec_char_size,
+    codec_last_char_mask,
+}(str_id : felt) -> (str : String):
     alloc_locals
     let (str) = alloc()
 
     let (str_len) = strings_len.read(str_id)
 
     if str_len == 0:
-        return (string(str_len, str))
+        return (String(str_len, str))
     end
 
     let (full_ss_len, rem_char_len) = unsigned_div_rem(str_len, SHORT_STRING_MAX_LEN)
 
     # Initiate loop with # of short strings and the last short string length
     _loop_get_ss(str_id, full_ss_len, rem_char_len, str)
-    return (string(str_len, str))
+    return (String(str_len, str))
 end
 
 func _loop_get_ss{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
+    syscall_ptr : felt*,
+    bitwise_ptr : BitwiseBuiltin*,
+    pedersen_ptr : HashBuiltin*,
+    range_check_ptr,
+    codec_char_size,
+    codec_last_char_mask,
 }(str_id : felt, ss_index : felt, ss_len : felt, str : felt*):
     let (ss_felt) = strings_data.read(str_id, ss_index)
     # Get and separate each character in the short string
@@ -53,7 +63,12 @@ func _loop_get_ss{
 end
 
 func _loop_get_ss_char{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
+    syscall_ptr : felt*,
+    bitwise_ptr : BitwiseBuiltin*,
+    pedersen_ptr : HashBuiltin*,
+    range_check_ptr,
+    codec_char_size,
+    codec_last_char_mask,
 }(ss_felt : felt, ss_position : felt, char_index : felt, str : felt*):
     # Must be checked at beginning of function here for the case where str_len = x * SHORT_STRING_MAX_LEN
     if char_index == 0:
@@ -61,7 +76,7 @@ func _loop_get_ss_char{
     end
 
     # Extract last character from short string
-    let (ss_rem, char) = manipulation_extract_last_char_from_ss(ss_felt)
+    let (ss_rem, char) = conversion_extract_last_char_from_ss(ss_felt)
 
     # Store the character in the correct position, i.e. SHORT_STRING_INDEX * SHORT_STRING_MAX_LEN + INDEX_IN_SHORT_STRING
     assert str[ss_position * SHORT_STRING_MAX_LEN + char_index - 1] = char
@@ -70,11 +85,11 @@ func _loop_get_ss_char{
 end
 
 # write
-func storage_write{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    str_id : felt, str : string
-):
+func storage_write{
+    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, codec_char_size
+}(str_id : felt, str : String):
     alloc_locals
-    with_attr error_message("write: exceeding max string length 2^15"):
+    with_attr error_message("write: exceeding max String length 2^15"):
         assert_le(str.len, STRING_MAX_LEN)
     end
     strings_len.write(str_id, str.len)
@@ -90,9 +105,9 @@ func storage_write{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check
     return ()
 end
 
-func _loop_set_ss{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    str_id : felt, ss_index : felt, ss_len : felt, str : felt*
-):
+func _loop_set_ss{
+    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, codec_char_size
+}(str_id : felt, ss_index : felt, ss_len : felt, str : felt*):
     # Accumulate all characters in a felt and write it
     _loop_set_ss_char(str_id, 0, ss_index, ss_len, ss_len, str)
 
@@ -104,7 +119,9 @@ func _loop_set_ss{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_
     return ()
 end
 
-func _loop_set_ss_char{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func _loop_set_ss_char{
+    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, codec_char_size
+}(
     str_id : felt,
     ss_felt_acc : felt,
     ss_position : felt,
@@ -117,18 +134,17 @@ func _loop_set_ss_char{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
         return ()
     end
 
-    let (char_offset) = pow(CHAR_SIZE, ss_len - char_index)
+    let (char_offset) = pow(codec_char_size, ss_len - char_index)
     let ss_felt = ss_felt_acc + str[ss_position * SHORT_STRING_MAX_LEN + char_index - 1] * char_offset
     _loop_set_ss_char(str_id, ss_felt, ss_position, ss_len, char_index - 1, str)
     return ()
 end
 
 # write from character array
-func storage_write_from_char_arr{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    str_id : felt, str_len : felt, str_data : felt*
-):
-    let str = string(str_len, str_data)
-    storage_write(str_id, str)
+func storage_write_from_char_arr{
+    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, codec_char_size
+}(str_id : felt, str_len : felt, str_data : felt*):
+    storage_write(str_id, String(str_len, str_data))
     return ()
 end
 
