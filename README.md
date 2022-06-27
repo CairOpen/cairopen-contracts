@@ -11,6 +11,8 @@ Examples for use in other Cairo contracts are provided in [examples](examples).
 - [Libraries](#libraries)
   - [String](#string)
   - [Math](#math)
+  - [Binary](#binary)
+  - [Hash](#hash)
 - [Local setup](#local-setup)
 
 ## Installation
@@ -84,6 +86,28 @@ Mathematical utilities in Cairo. [Docs](src/cairopen/math/)
   - [`invert_arr`](src/cairopen/math/README.md#invert_arr)
   - [`invert_felt_arr`](src/cairopen/math/README.md#invert_felt_arr)
   - [`assert_felt_arr_unique`](src/cairopen/math/README.md#assert_felt_arr_unique)
+
+
+### Binary
+
+Binary utilities in Cairo. [Docs](src/cairopen/binary/)
+
+- [Bits](src/cairopen/binary/README.md#Bits)
+  - [`Bits.extract`](src/cairopen/binary/README.md#Bits.extract)
+  - [`Bits.merge`](src/cairopen/binary/README.md#Bits.merge)
+  - [`Bits.rightshift`](src/cairopen/binary/README.md#Bits.rightshift)
+  - [`Bits.leftshift`](src/cairopen/binary/README.md#Bits.leftshift)
+  - [`Bits.rightrotate`](src/cairopen/binary/README.md#Bits.rightrotate)
+  - [`Bits.negate`](src/cairopen/binary/README.md#Bits.negate)
+
+
+### Hash
+
+Hashing utilities in Cairo. [Docs](src/cairopen/hash/)
+
+- [hash](src/cairopen/hash/README.md)
+  - [`sha256`](src/cairopen/hash/README.md#sha256)
+
 
 ## Local setup
 
