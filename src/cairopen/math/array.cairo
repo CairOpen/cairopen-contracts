@@ -2,9 +2,12 @@
 
 from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.dict_access import DictAccess
-from starkware.cairo.common.math import assert_le
+from starkware.cairo.common.math import assert_le, sqrt, assert_in_range
 from starkware.cairo.common.memcpy import memcpy
 from starkware.cairo.common.squash_dict import squash_dict
+from starkware.cairo.common.usort import usort
+from starkware.cairo.common.math_cmp import is_le
+
 
 # @dev Concatenates two arrays together
 # @implicit range_check_ptr (felt)
