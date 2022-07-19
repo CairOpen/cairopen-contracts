@@ -212,6 +212,9 @@ func max(input_len : felt, input : felt*) -> (output : felt):
 end
 
 # @dev Copies values from one array to another, broadcasting as necessary.
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param new_array (felt*): felt array with copied elements
 func copyto(input_len : felt, input : felt*, new_array : felt*) -> ():
     if input_len == 0:
         return()
@@ -221,12 +224,18 @@ func copyto(input_len : felt, input : felt*, new_array : felt*) -> ():
 end
 
 # @dev Return the indices of the bins to which each value in input array belongs.
+# @implicit range_check_ptr (felt)
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param new_array (felt*): felt array with the indices of the bins
+# @param bins_len (felt): length of the felt array
+# @param bins (felt*): felt array
 func digitize{range_check_ptr : felt}(input_len : felt, input : felt*, new_array : felt*, bins_len : felt, bins : felt*) -> ():
     if input_len == 0:
         return()
     end
-    let (bin) = _value_into_bins(bins_len, bins, input[0]) 
-    assert[new_array] = bin
+    let (indice_bin) = _indice_bin(bins_len, bins, input[0]) 
+    assert[new_array] = indice_bin
     return digitize(input_len - 1, input + 1, new_array + 1, bins_len , bins)
 end
 
@@ -239,11 +248,11 @@ func bincount(input_len : felt, input : felt*, new_array : felt*) -> ():
     return()
 end
 
-# @dev Indicates if an array contains a certain felt
+# @dev Indicates the number of occurrences of an element within the array
+# @param value (felt): felt 
 # @param input_len (felt): length of the felt array
-# @param value (felt): felt array
-# @param input (felt*): felt array where new values will be stored
-# @return output (felt): 1 if the felt is contained, 0 if not.
+# @param input (felt*): felt array
+# @return output (felt): return the number of occurrences.
 func contain_count(value : felt, input_len : felt, input : felt*) -> (result : felt):
     alloc_locals
     if input_len == 0:
@@ -259,21 +268,19 @@ func contain_count(value : felt, input_len : felt, input : felt*) -> (result : f
     return (t + total)
 end
 
-# @dev Indicates if an array contains a certain felt
-# @implicit range_check_ptr (felt)
+# @dev Indicates if an array contain a certain felt
+# @param value (felt): felt 
 # @param input_len (felt): length of the felt array
-# @param value (felt): felt array
-# @param input (felt*): felt array where new values will be stored
+# @param input (felt*): felt
 # @return output (felt): 1 if the felt is contained, 0 if not.
-func contains(value : felt, input_len : felt, input : felt*) -> (result : felt):
+func contain(value : felt, input_len : felt, input : felt*) -> (result : felt):
     if input_len == 0:
         return(0)
     end
-
     if value == input[0]:
         return (1)
     else:
-        return contains(value, input_len - 1, input + 1) 
+        return contain(value, input_len - 1, input + 1) 
     end
 end
 
@@ -412,6 +419,10 @@ func _sub_loop_invert_arr{range_check_ptr}(
     return _sub_loop_invert_arr(arr_len, arr, inv_arr, size, struct_index, struct_offset - 1)
 end
 
+# @dev Count number of occurrences of each value in array of non-negative ints.
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param new_array (felt*): felt array where new values will be stored
 func _bincount(i :felt, input_len : felt, input : felt*, new_array : felt*, idx : felt) -> ():
     if i == 0:
         return()
@@ -421,14 +432,19 @@ func _bincount(i :felt, input_len : felt, input : felt*, new_array : felt*, idx 
     return _bincount(i - 1, input_len, input, new_array + 1, idx + 1)
 end
 
-func _value_into_bins{range_check_ptr : felt}(bins_len : felt, bins : felt*, value : felt) -> (bins : felt):
+# @dev Returns the index of the container to which a particular value belongs
+# @implicit range_check_ptr (felt)
+# @param value (felt): felt
+# @param bins_len (felt): length of the felt array
+# @param bins (felt*): felt array
+# @return output (felt): return the index of the container.
+func _indice_bin{range_check_ptr : felt}(bins_len : felt, bins : felt*, value : felt) -> (bins : felt):
     if bins_len == 0:
         return(0)
     end
-    # review the value + 1, es for the condition is_le
     let (is_minor) = is_le(value + 1, [bins + bins_len - 1])
     if is_minor == 1:
-        return _value_into_bins(bins_len - 1, bins, value)
+        return _indice_bin(bins_len - 1, bins, value)
     else:
         return (bins_len)
     end
