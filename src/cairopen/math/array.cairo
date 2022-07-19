@@ -2,9 +2,12 @@
 
 from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.dict_access import DictAccess
-from starkware.cairo.common.math import assert_le
+from starkware.cairo.common.math import assert_le, sqrt, assert_in_range
 from starkware.cairo.common.memcpy import memcpy
 from starkware.cairo.common.squash_dict import squash_dict
+from starkware.cairo.common.usort import usort
+from starkware.cairo.common.math_cmp import is_le
+
 
 # @dev Concatenates two arrays together
 # @implicit range_check_ptr (felt)
@@ -97,6 +100,278 @@ func assert_felt_arr_unique{range_check_ptr}(arr_len : felt, arr : felt*):
     return ()
 end
 
+# Compute the sum of the element in an array.
+# Args:
+#   input_len - length of the felt array.
+#   input - felt array.
+# Returns:
+#   output - felt with the sum of each element of the array.
+func sum(input_len : felt, input : felt*) -> (output : felt):
+    if input_len == 0:
+        return(0)
+    end
+    let (output) = sum(input_len - 1, input + 1) 
+    return(output + [input])
+end
+
+# Compute the arithmetic mean along the array.
+# Args:
+#   input_len - length of the felt array.
+#   input - felt array.
+# Returns:
+#   output - arithmetic mean.
+func mean(input_len : felt, input : felt*) -> (output : felt):
+    let (s) = sum(input_len, input)
+    return(s / input_len)
+end
+
+# Compute the scalar multiplication of an array.
+# Args:
+#   input_len - length of the felt array.
+#   scalar - felt that multiplies the array.
+#   input - felt array.
+# Returns:
+#   output - scalar product felt.
+func scalar_product(input_len : felt, scalar : felt, input : felt*) -> (output : felt):    
+    if input_len == 0:
+        return(0)
+    end
+    let (d) = scalar_product(input_len - 1, scalar, input + 1)
+    return (scalar * [input] + d) 
+end
+
+# Compute the median along the array.
+# Args:
+#   input_len - length of the felt array.
+#   vs - felt array.
+# Returns:
+#   output - median.
+func median(input_len : felt, input : felt*) -> (med : felt):
+    tempvar is_even : felt
+    %{
+        ids.is_even = 1 if (ids.input_len % 2 == 0) else 0
+    %}
+    if is_even == 1:
+        return(input[input_len / 2])
+    else:
+        tempvar a = input[((input_len - 1) / 2) - 1]
+        tempvar b = input[((input_len + 1) / 2) - 1]
+        return((a + b) / 2)
+    end
+end
+
+# Compute the dot product of two arrays.
+# Args:
+#   input_len - length of the felt arrays. If they do not have the same length an error will appear.
+#   input1 - first felt array.
+#   input2 - second felt array.
+# Returns:
+#   output - dot product felt.
+func dot(input_len : felt, input1 : felt*, input2 : felt*) -> (output : felt):    
+    if input_len == 1:
+        return(0)
+    end
+    let (d) = dot(input_len - 1, input1 + 1, input2 + 1)
+    return ([input1] * [input2] + d) 
+end
+
+# Obtain the minimum value in an array.
+# Args:
+#   input_len - length of the felt array.
+#   input - felt array.
+# Returns:
+#   output - minimum value.
+func min(input_len : felt, input : felt*) -> (output : felt):
+    if input_len == 0:
+        return (input[0])
+    end
+    let (input_len_prev) = min(input_len - 1, input)
+    let min_prev = input[input_len - 1]
+    tempvar output : felt
+    %{
+        ids.output = min(ids.input_len_prev, ids.min_prev)
+    %}
+    return(output)
+end
+
+# @dev Obtain the maximum value in an array.
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @return output (felt): Maximum value
+func max(input_len : felt, input : felt*) -> (output : felt):
+    if input_len == 0:
+        return (input[0])
+    end
+    let (input_len_prev) = max(input_len - 1, input)
+    let max_prev = input[input_len - 1]
+    tempvar output : felt
+    %{
+        ids.output = max(ids.input_len_prev, ids.max_prev)
+    %}
+    return(output)
+end
+
+# @dev Copies values from one array to another, broadcasting as necessary.
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param new_array (felt*): felt array with copied elements
+func copyto(input_len : felt, input : felt*, new_array : felt*) -> ():
+    if input_len == 0:
+        return()
+    end
+    assert[new_array] = input[0]
+    return copyto(input_len - 1, input + 1, new_array + 1)
+end
+
+# @dev Return the indices of the bins to which each value in input array belongs.
+# @implicit range_check_ptr (felt)
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param new_array (felt*): felt array with the indices of the bins
+# @param bins_len (felt): length of the felt array
+# @param bins (felt*): felt array
+func digitize{range_check_ptr : felt}(input_len : felt, input : felt*, new_array : felt*, bins_len : felt, bins : felt*) -> ():
+    if input_len == 0:
+        return()
+    end
+    let (indice_bin) = _indice_bin(bins_len, bins, input[0]) 
+    assert[new_array] = indice_bin
+    return digitize(input_len - 1, input + 1, new_array + 1, bins_len , bins)
+end
+
+# @dev Count number of occurrences of each value in array of non-negative ints.
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param new_array (felt*): felt array where new values will be stored
+func bincount(input_len : felt, input : felt*, new_array : felt*) -> ():
+    _bincount(input_len, input_len, input, new_array, 0)
+    return()
+end
+
+# @dev Indicates the number of occurrences of an element within the array
+# @param value (felt): felt 
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @return output (felt): return the number of occurrences.
+func contain_count(value : felt, input_len : felt, input : felt*) -> (result : felt):
+    alloc_locals
+    if input_len == 0:
+        return(0)
+    end
+    local t
+    if value == input[0]:
+        t = 1
+    else:
+        t = 0
+    end
+    let (local total) = contain_count(value, input_len - 1, input + 1)
+    return (t + total)
+end
+
+# @dev Indicates if an array contain a certain felt
+# @param value (felt): felt 
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt
+# @return output (felt): 1 if the felt is contained, 0 if not.
+func contain(value : felt, input_len : felt, input : felt*) -> (result : felt):
+    if input_len == 0:
+        return(0)
+    end
+    if value == input[0]:
+        return (1)
+    else:
+        return contain(value, input_len - 1, input + 1) 
+    end
+end
+
+# @dev Helper function, calculates the deviations of each data point from the mean, and square the result of each.
+# @implicit range_check_ptr (felt)
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param output (felt*): felt array where new values will be stored
+# @param step (felt): must be 0 when first called 
+# @param mu (felt): felt representing the mean
+func helper_var(input_len : felt, input : felt*, output : felt*, step : felt, mu : felt):
+    
+    if input_len == step: 
+        return ()
+    end
+
+    tempvar val : felt 
+    val = [input]
+
+    tempvar dif : felt
+    dif = val - mu
+
+    assert [output] =  dif*dif
+    helper_var(input_len, input + 1, output + 1, step + 1, mu)
+    return()
+end
+
+# @dev Compute the variance along the specified array.
+# @param input_len (felt): length of the felt array.
+# @param input (felt*): felt array.
+# @return var (felt): variance.
+func var(input_len : felt, input : felt*) -> (output : felt):
+    alloc_locals
+
+    let (mu) = mean(input_len, input)
+    let (local inter : felt*) = alloc()
+
+    helper_var(input_len=input_len, input=input, output=inter, step=0, mu=mu)
+
+    let (var) = mean(input_len, inter)
+
+    return(output=var)
+end 
+
+# @dev Compute the standard deviation along the specified array.
+# @implicit range_check_ptr (felt)
+# @param input_len (felt): length of the felt array.
+# @param input (felt*): felt array.
+# @return sd (felt): floor value of the standard deviation.
+func std{range_check_ptr}(input_len : felt, input : felt*) -> (output : felt):
+    
+    let (v) = var(input_len, input)
+    let (sd) = sqrt(v)
+
+    return(sd)
+end
+
+# @dev Returns the q-th percentile of the array elements
+# @implicit range_check_ptr (felt)
+# @param input_len (felt): length of the felt array.
+# @param input (felt*): sorted felt array.
+# @param q (felt): felt between 1 and 100
+# @return output (felt): felt value of the q percetile
+func percentile{range_check_ptr}(input_len : felt, input : felt*, q : felt) -> (output : felt):
+
+    assert_in_range(q,1,101)
+
+    tempvar index : felt
+    tempvar isInt : felt
+
+    if q == 100:
+        return(input[input_len - 1])
+    end
+    %{
+        i = (ids.q/100) * ids.input_len
+
+        ids.isInt = 1 if i%1 == 0 else 0
+        ids.index =  round(i)
+    %}
+    if isInt == 0:
+        return(input[index - 1])
+    end
+
+    let x1 = input[index - 1]
+    let x2 = input[index]
+
+    let r = x2 + x1
+
+    return(r/2)
+end
+
 #
 # Internals
 #
@@ -142,4 +417,35 @@ func _sub_loop_invert_arr{range_check_ptr}(
     end
 
     return _sub_loop_invert_arr(arr_len, arr, inv_arr, size, struct_index, struct_offset - 1)
+end
+
+# @dev Count number of occurrences of each value in array of non-negative ints.
+# @param input_len (felt): length of the felt array
+# @param input (felt*): felt array
+# @param new_array (felt*): felt array where new values will be stored
+func _bincount(i :felt, input_len : felt, input : felt*, new_array : felt*, idx : felt) -> ():
+    if i == 0:
+        return()
+    end
+    let (count) = contain_count(idx, input_len, input)
+    assert[new_array] = count
+    return _bincount(i - 1, input_len, input, new_array + 1, idx + 1)
+end
+
+# @dev Returns the index of the container to which a particular value belongs
+# @implicit range_check_ptr (felt)
+# @param value (felt): felt
+# @param bins_len (felt): length of the felt array
+# @param bins (felt*): felt array
+# @return output (felt): return the index of the container.
+func _indice_bin{range_check_ptr : felt}(bins_len : felt, bins : felt*, value : felt) -> (bins : felt):
+    if bins_len == 0:
+        return(0)
+    end
+    let (is_minor) = is_le(value + 1, [bins + bins_len - 1])
+    if is_minor == 1:
+        return _indice_bin(bins_len - 1, bins, value)
+    else:
+        return (bins_len)
+    end
 end
