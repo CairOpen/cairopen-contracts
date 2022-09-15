@@ -10,117 +10,117 @@ from cairopen.string.manipulation import (
     String_extract_last_char,
 )
 
-const CORE_STRING = 'CORE_STRING'
-const BASE_URI = 'BASE_URI'
-const APPENDED_STRING = 'APPENDED_STRING'
+const CORE_STRING = 'CORE_STRING';
+const BASE_URI = 'BASE_URI';
+const APPENDED_STRING = 'APPENDED_STRING';
 
-#
-# Getters
-#
+//
+// Getters
+//
 
 @view
 func charExtraction{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(ss : felt) -> (ss_rem : felt, char : felt):
-    let (ss_rem, char) = String_extract_last_char(ss)
-    return (ss_rem, char)
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}(ss: felt) -> (ss_rem: felt, char: felt) {
+    let (ss_rem, char) = String_extract_last_char(ss);
+    return (ss_rem, char);
+}
 
 @view
 func readCoreString{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}() -> (str_len : felt, str : felt*):
-    let (str_len, str) = String_get(CORE_STRING)
-    return (str_len, str)
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}() -> (str_len: felt, str: felt*) {
+    let (str_len, str) = String_get(CORE_STRING);
+    return (str_len, str);
+}
 
 @view
 func tokenURI{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(token_id : felt) -> (str_len : felt, str : felt*):
-    alloc_locals
-    let (local base_uri_len, base_uri_str) = String_get(BASE_URI)
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}(token_id: felt) -> (str_len: felt, str: felt*) {
+    alloc_locals;
+    let (local base_uri_len, base_uri_str) = String_get(BASE_URI);
 
-    let (token_id_len, token_id_str) = String_felt_to_string(token_id)
+    let (token_id_len, token_id_str) = String_felt_to_string(token_id);
 
     let (uri_len, uri_str) = String_path_join(
         base_uri_len, base_uri_str, token_id_len, token_id_str
-    )
-    return (uri_len, uri_str)
-end
+    );
+    return (uri_len, uri_str);
+}
 
 @view
 func baseURI{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}() -> (str_len : felt, str : felt*):
-    let (str_len, str) = String_get(BASE_URI)
-    return (str_len, str)
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}() -> (str_len: felt, str: felt*) {
+    let (str_len, str) = String_get(BASE_URI);
+    return (str_len, str);
+}
 
 @view
 func appendLive{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(str_len : felt, str : felt*) -> (str_len : felt, str : felt*):
-    alloc_locals
-    let (local base_len, base_str) = String_get(APPENDED_STRING)
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}(str_len: felt, str: felt*) -> (str_len: felt, str: felt*) {
+    alloc_locals;
+    let (local base_len, base_str) = String_get(APPENDED_STRING);
 
-    let (appended_len, appended_str) = String_append(base_len, base_str, str_len, str)
-    return (appended_len, appended_str)
-end
+    let (appended_len, appended_str) = String_append(base_len, base_str, str_len, str);
+    return (appended_len, appended_str);
+}
 
 @view
 func getAppendedString{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}() -> (str_len : felt, str : felt*):
-    let (str_len, str) = String_get(APPENDED_STRING)
-    return (str_len, str)
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}() -> (str_len: felt, str: felt*) {
+    let (str_len, str) = String_get(APPENDED_STRING);
+    return (str_len, str);
+}
 
-#
-# Externals
-#
+//
+// Externals
+//
 
 @external
 func writeCoreString{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(str_len : felt, str : felt*):
-    String_set(CORE_STRING, str_len, str)
-    return ()
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}(str_len: felt, str: felt*) {
+    String_set(CORE_STRING, str_len, str);
+    return ();
+}
 
 @external
 func setBaseURI{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(str_len : felt, str : felt*):
-    String_set(BASE_URI, str_len, str)
-    return ()
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}(str_len: felt, str: felt*) {
+    String_set(BASE_URI, str_len, str);
+    return ();
+}
 
 @external
 func writeBaseAppendString{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(str_len : felt, str : felt*):
-    String_set(APPENDED_STRING, str_len, str)
-    return ()
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}(str_len: felt, str: felt*) {
+    String_set(APPENDED_STRING, str_len, str);
+    return ();
+}
 
 @external
 func appendInStorage{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}(str_len : felt, str : felt*):
-    alloc_locals  # required to avoid syscall_ptr and pedersen_ptr revokation
-    let (base_len, base_str) = String_get(APPENDED_STRING)
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}(str_len: felt, str: felt*) {
+    alloc_locals;  // required to avoid syscall_ptr and pedersen_ptr revokation
+    let (base_len, base_str) = String_get(APPENDED_STRING);
 
-    let (appended_len, appended_str) = String_append(base_len, base_str, str_len, str)
+    let (appended_len, appended_str) = String_append(base_len, base_str, str_len, str);
 
-    String_set(APPENDED_STRING, appended_len, appended_str)
-    return ()
-end
+    String_set(APPENDED_STRING, appended_len, appended_str);
+    return ();
+}
 
 @external
 func deleteAppendedString{
-    syscall_ptr : felt*, bitwise_ptr : BitwiseBuiltin*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}():
-    String_delete(APPENDED_STRING)
-    return ()
-end
+    syscall_ptr: felt*, bitwise_ptr: BitwiseBuiltin*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}() {
+    String_delete(APPENDED_STRING);
+    return ();
+}
